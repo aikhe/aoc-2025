@@ -25,8 +25,8 @@ class Rotation {
 	private final String fileName;
 	private int pointer;
 	private final int cap;
-	private int zero_count;
-	private int points;
+	private int zeroCount;
+	private int pointsVal;
 
 	public Rotation(String fileName, int pointer, int cap) {
 		this.fileName = fileName;
@@ -46,14 +46,15 @@ class Rotation {
 			}
 
 			if (pointer == 0) {
-				zero_count++;
+				zeroCount++;
 			}
 
-			System.out.println("The dial is rotated " + value.direction() + value.steps() + " to point at " + pointer);
+			System.out.println("The dial is rotated " + value.direction() + value.steps()
+					+ " to point at " + pointer);
 		}
 
-		System.out.println("Total zero: " + zero_count + ", Points: " + points);
-		System.out.println("All: " + (zero_count + points));
+		System.out.println("Part 1 (Final Zeros): " + zeroCount);
+		System.out.println("Part 2 (Total Points): " + pointsVal);
 	}
 
 	public List<String> parseFile() throws FileNotFoundException {
@@ -62,7 +63,10 @@ class Rotation {
 
 		try (Scanner scanner = new Scanner(file)) {
 			while (scanner.hasNextLine()) {
-				lines.add(scanner.nextLine());
+				String line = scanner.nextLine().trim();
+				if (!line.isEmpty()) {
+					lines.add(line);
+				}
 			}
 		}
 
@@ -77,19 +81,33 @@ class Rotation {
 	}
 
 	public int calcRight(int steps) {
-		int point = (pointer + steps) / cap;
-		points = points + point;
+		// add points for every loops
+		pointsVal += (pointer + steps) / cap;
 
 		return (pointer + steps) % cap;
 	}
 
 	public int calcLeft(int steps) {
-		int val = (pointer - steps) % cap;
-		while (val < 0) {
-			val += cap;
-			points++;
+		int nextStep = steps;
+
+		// total distance to reach 0
+		int distance = (pointer == 0) ? cap : pointer;
+
+		// once confident to reach 0 then add points
+		if (nextStep >= distance) {
+			pointsVal++;
+			nextStep -= distance;
+
+			// add points for additional loops
+			pointsVal += nextStep / cap;
 		}
 
-		return val;
+		// if nextStep is not enough then loop again
+		int result = (pointer - steps) % cap;
+		if (result < 0) {
+			result += cap;
+		}
+
+		return result;
 	}
 }
