@@ -8,14 +8,9 @@ public class Day2 {
 	public static void main(String[] args) throws FileNotFoundException {
 		System.out.println("Hello, Day 2!");
 
-		Range input = new Range("input.txt");
-		List<String> ranges = input.parseFile();
-
-		int id = 0;
-		for (String range : ranges) {
-			System.out.println("Range " + id + ": " + range);
-			id++;
-		}
+		// Range range = new Range("input.txt");
+		Range range = new Range("sample-input.txt");
+		range.run();
 	}
 }
 
@@ -26,7 +21,22 @@ class Range {
 		this.fileName = fileName;
 	}
 
-	public List<String> parseFile() throws FileNotFoundException {
+	public void run() throws FileNotFoundException {
+		List<String> ranges = parseFile();
+
+		int id = 0;
+		for (String range : ranges) {
+			if (checkIfRepeatedTwice(range)) {
+				System.out.println("Range " + id + ": " + range + ", yes");
+			} else {
+				System.out.println("Range " + id + ": " + range + ", no");
+			}
+
+			id++;
+		}
+	}
+
+	private List<String> parseFile() throws FileNotFoundException {
 		List<String> ranges = new ArrayList<>();
 		File file = new File(fileName);
 		Scanner scanner = new Scanner(file);
@@ -34,11 +44,23 @@ class Range {
 		scanner.useDelimiter("\\s*,\\s*");
 
 		while (scanner.hasNext()) {
-			String range = scanner.next();
+			String range = scanner.next().trim();
 			ranges.add(range);
 		}
 
 		scanner.close();
 		return ranges;
+	}
+
+	// private int parseRange() {
+	//
+	// }
+
+	private boolean checkIfRepeatedTwice(String range) {
+		if (range.length() % 2 == 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
