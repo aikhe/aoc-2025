@@ -4,21 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-record RangeValue(int initial, int last) {
+record RangeValue(long initial, long last) {
+}
+
+record Split(String firstSlice, String secondSlice) {
 }
 
 public class Day2 {
 	public static void main(String[] args) throws FileNotFoundException {
 		System.out.println("Hello, Day 2!");
 
-		// Range range = new Range("input.txt");
-		Range range = new Range("sample-input.txt");
+		Range range = new Range("input.txt");
+		// Range range = new Range("sample-input.txt");
 		range.run();
 	}
 }
 
 class Range {
 	private final String fileName;
+	private long total;
 
 	public Range(String fileName) {
 		this.fileName = fileName;
@@ -30,21 +34,35 @@ class Range {
 		for (String range : ranges) {
 			RangeValue rangeValues = parseRange(range);
 
-			for (int i = rangeValues.initial(); i <= rangeValues.last(); i++) {
-				if (checkIfRepeatedTwice(String.valueOf(i))) {
-					System.out.println("Number: " + i + ", Valid Range");
+			for (long num = rangeValues.initial(); num <= rangeValues.last(); num++) {
+				// checks if number has two sequence
+				if (checkIfRepeatedTwice(String.valueOf(num))) {
+					Split splitValues = splitNumber(String.valueOf(num));
+
+					// now test if both sequence are equal
+					if (splitValues.firstSlice().equals(splitValues.secondSlice())) {
+						System.out.println("Number: " + num + ", " + splitValues.firstSlice() + "-" + splitValues.secondSlice()
+								+ ", Valid Range | " + "" + "Valid ID");
+
+						total += num;
+					} else {
+						System.out.println("Number: " + num + ", " + splitValues.firstSlice() + "-" + splitValues.secondSlice()
+								+ ", Valid Range | " + "" + "Invalid ID");
+					}
 				} else {
-					System.out.println("Number: " + i + ", Invalid Range");
+					System.out.println("Number: " + num + ", Invalid Range");
 				}
 			}
 		}
+
+		System.out.println("Total: " + total);
 	}
 
 	private List<String> parseFile() throws FileNotFoundException {
 		List<String> ranges = new ArrayList<>();
 		File file = new File(fileName);
 		Scanner scanner = new Scanner(file);
-		// use reges to get each reange separated by comma
+		// use regex to get each reange separated by comma
 		scanner.useDelimiter("\\s*,\\s*");
 
 		while (scanner.hasNext()) {
@@ -59,8 +77,8 @@ class Range {
 	private RangeValue parseRange(String range) {
 		String[] parts = range.split("-");
 
-		int initial = Integer.parseInt(parts[0].trim());
-		int last = Integer.parseInt(parts[1].trim());
+		long initial = Long.parseLong(parts[0].trim());
+		long last = Long.parseLong(parts[1].trim());
 		return new RangeValue(initial, last);
 	}
 
@@ -70,5 +88,11 @@ class Range {
 		} else {
 			return false;
 		}
+	}
+
+	private Split splitNumber(String num) {
+		int mid = num.length() / 2;
+
+		return new Split(num.substring(0, mid), num.substring(mid));
 	}
 }
