@@ -45,19 +45,20 @@ class Range {
 				Map<Integer, List<String>> splitValues = splitNumber(String.valueOf(num));
 
 				for (Map.Entry<Integer, List<String>> sequences : splitValues.entrySet()) {
-					System.out.print("Key: " + sequences.getKey() + ", Values: " + sequences.getValue());
+					// System.out.print("Key: " + sequences.getKey() + ", Values: " +
+					// sequences.getValue());
 
 					if (sequences.getValue().stream().distinct().count() == 1) {
 						totalInvalidID += num;
 
-						System.out.println(", Invalid Range");
+						// System.out.println(", Invalid Range");
 						break;
 					} else {
-						System.out.println(", Valid Range");
+						// System.out.println(", Valid Range");
 					}
 				}
 
-				System.out.println(splitValues);
+				// System.out.println(splitValues);
 			}
 		}
 
