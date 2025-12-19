@@ -3,8 +3,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-// import java.util.HashMap;
-// import java.util.Map;
+import java.util.HashMap;
+import java.util.Map;
 
 record RangeValue(long initial, long last) {
 }
@@ -39,18 +39,21 @@ class Range {
 			for (long num = rangeValues.initial(); num <= rangeValues.last(); num++) {
 				// checks if number has two sequence
 				if (checkIfCanSlice(String.valueOf(num))) {
-					Split splitValues = splitNumber(String.valueOf(num));
+					Map<Integer, List<String>> splitValues = splitNumber(String.valueOf(num));
 
-					// now test if both sequence are equal
-					if (splitValues.firstSlice().equals(splitValues.secondSlice())) {
-						System.out.println("Number: " + num + ", " + splitValues.firstSlice() + "-" + splitValues.secondSlice()
-								+ ", Even Range | " + "" + "Invalid ID");
-
-						total += num;
-					} else {
-						System.out.println("Number: " + num + ", " + splitValues.firstSlice() + "-" + splitValues.secondSlice()
-								+ ", Even Range | " + "" + "Valid ID");
-					}
+					System.out.println(splitValues);
+					// // now test if both sequence are equal
+					// if (splitValues.firstSlice().equals(splitValues.secondSlice())) {
+					// System.out.println("Number: " + num + ", " + splitValues.firstSlice() + "-" +
+					// splitValues.secondSlice()
+					// + ", Even Range | " + "" + "Invalid ID");
+					//
+					// total += num;
+					// } else {
+					// System.out.println("Number: " + num + ", " + splitValues.firstSlice() + "-" +
+					// splitValues.secondSlice()
+					// + ", Even Range | " + "" + "Valid ID");
+					// }
 				} else {
 
 					System.out.println("Number: " + num + ", Odd Range");
@@ -93,20 +96,21 @@ class Range {
 		}
 	}
 
-	private Split splitNumber(String num) {
-		// Map<Integer, String> slices = new HashMap<>();
+	private Map<Integer, List<String>> splitNumber(String num) {
+		Map<Integer, List<String>> slices = new HashMap<>();
 		int mid = num.length() / 2;
-		System.out.println("mid " + mid);
 
-		for (int i = 1; i <= mid; i++) {
+		for (int sequenceNum = 1; sequenceNum <= mid; sequenceNum++) {
 			int sequencePointer;
-			System.out.println("sequence num " + i);
 
-			for (int j = 1; j <= num.length(); j += i) {
-				System.out.println("sequence " + j);
+			for (sequencePointer = 0; sequencePointer + sequenceNum <= num.length(); sequencePointer += sequenceNum) {
+				slices.computeIfAbsent(sequenceNum, k -> new ArrayList<>())
+						.add(num.substring(sequencePointer, sequencePointer + sequenceNum));
 			}
+
+			sequencePointer = 0;
 		}
 
-		return new Split(num.substring(0, mid), num.substring(mid));
+		return slices;
 	}
 }
