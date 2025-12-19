@@ -42,7 +42,7 @@ class Range {
 					Map<Integer, List<String>> splitValues = splitNumber(String.valueOf(num));
 
 					System.out.println(splitValues);
-					// // now test if both sequence are equal
+					// now test if both sequence are equal
 					// if (splitValues.firstSlice().equals(splitValues.secondSlice())) {
 					// System.out.println("Number: " + num + ", " + splitValues.firstSlice() + "-" +
 					// splitValues.secondSlice()
@@ -101,11 +101,16 @@ class Range {
 		int mid = num.length() / 2;
 
 		for (int sequenceNum = 1; sequenceNum <= mid; sequenceNum++) {
-			int sequencePointer;
+			int sequencePointer = 0;
+
+			if (num.length() % sequenceNum != 0) {
+				continue;
+			}
 
 			for (sequencePointer = 0; sequencePointer + sequenceNum <= num.length(); sequencePointer += sequenceNum) {
 				slices.computeIfAbsent(sequenceNum, k -> new ArrayList<>())
 						.add(num.substring(sequencePointer, sequencePointer + sequenceNum));
+				// System.out.println("Sequence Pointer: " + sequencePointer);
 			}
 
 			sequencePointer = 0;
