@@ -24,7 +24,7 @@ public class Day2 {
 
 class Range {
 	private final String fileName;
-	private long total;
+	private long totalInvalidID;
 
 	public Range(String fileName) {
 		this.fileName = fileName;
@@ -41,35 +41,34 @@ class Range {
 				if (checkIfCanSlice(String.valueOf(num))) {
 					Map<Integer, List<String>> splitValues = splitNumber(String.valueOf(num));
 
-					System.out.println(splitValues);
-					// now test if both sequence are equal
-					// if (splitValues.firstSlice().equals(splitValues.secondSlice())) {
-					// System.out.println("Number: " + num + ", " + splitValues.firstSlice() + "-" +
-					// splitValues.secondSlice()
-					// + ", Even Range | " + "" + "Invalid ID");
-					//
-					// total += num;
-					// } else {
-					// System.out.println("Number: " + num + ", " + splitValues.firstSlice() + "-" +
-					// splitValues.secondSlice()
-					// + ", Even Range | " + "" + "Valid ID");
-					// }
-				} else {
+					for (Map.Entry<Integer, List<String>> sequences : splitValues.entrySet()) {
+						System.out.print("Key: " + sequences.getKey() + ", Values: " + sequences.getValue());
 
+						if (sequences.getValue().stream().distinct().count() == 1) {
+							totalInvalidID += num;
+
+							System.out.println(", Invalid Range");
+						} else {
+							System.out.println(", Valid Range");
+						}
+					}
+
+					System.out.println(splitValues);
+				} else {
 					System.out.println("Number: " + num + ", Odd Range");
 				}
 			}
 		}
 
-		System.out.println("Total Invalid ID: " + total);
+		System.out.println("Total Invalid ID: " + totalInvalidID);
+
 	}
 
 	private List<String> parseFile() throws FileNotFoundException {
 		List<String> ranges = new ArrayList<>();
 		File file = new File(fileName);
 		Scanner scanner = new Scanner(file);
-		// use regex to get each reange separated by comma
-		scanner.useDelimiter("\\s*,\\s*");
+		scanner.useDelimiter("\\s*,\\s*"); // use regex to get each reange separated by comma
 
 		while (scanner.hasNext()) {
 			String range = scanner.next().trim();
@@ -103,6 +102,7 @@ class Range {
 		for (int sequenceNum = 1; sequenceNum <= mid; sequenceNum++) {
 			int sequencePointer = 0;
 
+			// edge case to check if sequence size fits the whole number length
 			if (num.length() % sequenceNum != 0) {
 				continue;
 			}
@@ -110,7 +110,6 @@ class Range {
 			for (sequencePointer = 0; sequencePointer + sequenceNum <= num.length(); sequencePointer += sequenceNum) {
 				slices.computeIfAbsent(sequenceNum, k -> new ArrayList<>())
 						.add(num.substring(sequencePointer, sequencePointer + sequenceNum));
-				// System.out.println("Sequence Pointer: " + sequencePointer);
 			}
 
 			sequencePointer = 0;
