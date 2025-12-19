@@ -34,6 +34,10 @@ class Range {
 		List<String> ranges = parseFile();
 
 		for (String range : ranges) {
+			System.out.println("Sequence: " + range);
+		}
+
+		for (String range : ranges) {
 			RangeValue rangeValues = parseRange(range);
 
 			for (long num = rangeValues.initial(); num <= rangeValues.last(); num++) {
@@ -48,6 +52,7 @@ class Range {
 							totalInvalidID += num;
 
 							System.out.println(", Invalid Range");
+							break;
 						} else {
 							System.out.println(", Valid Range");
 						}
@@ -68,10 +73,10 @@ class Range {
 		List<String> ranges = new ArrayList<>();
 		File file = new File(fileName);
 		Scanner scanner = new Scanner(file);
-		scanner.useDelimiter("\\s*,\\s*"); // use regex to get each reange separated by comma
+		scanner.useDelimiter("[,\\s]+"); // split by commas or any whitespace (including newlines)
 
 		while (scanner.hasNext()) {
-			String range = scanner.next().trim();
+			String range = scanner.next();
 			ranges.add(range);
 		}
 
