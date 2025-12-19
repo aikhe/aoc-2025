@@ -16,8 +16,8 @@ public class Day2 {
 	public static void main(String[] args) throws FileNotFoundException {
 		System.out.println("Hello, Day 2!");
 
-		// Range range = new Range("input.txt");
-		Range range = new Range("sample-input.txt");
+		Range range = new Range("input.txt");
+		// Range range = new Range("sample-input.txt");
 		range.run();
 	}
 }
@@ -42,26 +42,22 @@ class Range {
 
 			for (long num = rangeValues.initial(); num <= rangeValues.last(); num++) {
 				// checks if number has two sequence
-				if (checkIfCanSlice(String.valueOf(num))) {
-					Map<Integer, List<String>> splitValues = splitNumber(String.valueOf(num));
+				Map<Integer, List<String>> splitValues = splitNumber(String.valueOf(num));
 
-					for (Map.Entry<Integer, List<String>> sequences : splitValues.entrySet()) {
-						System.out.print("Key: " + sequences.getKey() + ", Values: " + sequences.getValue());
+				for (Map.Entry<Integer, List<String>> sequences : splitValues.entrySet()) {
+					System.out.print("Key: " + sequences.getKey() + ", Values: " + sequences.getValue());
 
-						if (sequences.getValue().stream().distinct().count() == 1) {
-							totalInvalidID += num;
+					if (sequences.getValue().stream().distinct().count() == 1) {
+						totalInvalidID += num;
 
-							System.out.println(", Invalid Range");
-							break;
-						} else {
-							System.out.println(", Valid Range");
-						}
+						System.out.println(", Invalid Range");
+						break;
+					} else {
+						System.out.println(", Valid Range");
 					}
-
-					System.out.println(splitValues);
-				} else {
-					System.out.println("Number: " + num + ", Odd Range");
 				}
+
+				System.out.println(splitValues);
 			}
 		}
 
@@ -73,10 +69,10 @@ class Range {
 		List<String> ranges = new ArrayList<>();
 		File file = new File(fileName);
 		Scanner scanner = new Scanner(file);
-		scanner.useDelimiter("[,\\s]+"); // split by commas or any whitespace (including newlines)
+		scanner.useDelimiter("\\s*,\\s*"); // use regex to get each reange separated by comma
 
 		while (scanner.hasNext()) {
-			String range = scanner.next();
+			String range = scanner.next().trim();
 			ranges.add(range);
 		}
 
@@ -90,14 +86,6 @@ class Range {
 		long initial = Long.parseLong(parts[0].trim());
 		long last = Long.parseLong(parts[1].trim());
 		return new RangeValue(initial, last);
-	}
-
-	private boolean checkIfCanSlice(String range) {
-		if (range.length() % 2 == 0) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	private Map<Integer, List<String>> splitNumber(String num) {
